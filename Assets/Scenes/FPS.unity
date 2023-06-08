@@ -723,16 +723,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1700971202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 394ade20d4585764d93335e44baf15c7, type: 3}
+  m_Script: {fileID: 11500000, guid: a9bce95e2ed194948a9cd51783a3d442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  head: {fileID: 1627184266}
-  walkSpeed: 7
-  runSpeed: 14
-  limitAngle: 89
-  sensitivity: 1
-  gravityScale: -0.15
-  jumpPower: 4.5
 --- !u!114 &1700971209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1067,6 +1060,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1943727067}
   - component: {fileID: 1943727068}
+  - component: {fileID: 1943727070}
   - component: {fileID: 1943727069}
   m_Layer: 0
   m_Name: Gun
@@ -1126,6 +1120,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1943727070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943727066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1a6f9bbf6774de41ac103003ca433e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2025433979
 GameObject:
   m_ObjectHideFlags: 0

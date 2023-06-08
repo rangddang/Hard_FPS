@@ -5,14 +5,11 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private GunController gun;
+    private Camera camera;
 
-    private void Update()
+    private void Awake()
     {
-        CameraZoom();
+        camera = GetComponent<Camera>();
     }
 
-    private void CameraZoom()
-    {
-
-    }
 }

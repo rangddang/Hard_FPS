@@ -2,39 +2,36 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-	[SerializeField] private PlayerActive active;
-	private Animator anim;
-	private Camera camera;
-
 	public bool aiming;
+
+	private GunAnimationController gunAnim;
 
 	private void Awake()
 	{
-		anim = GetComponent<Animator>();
-		camera = Camera.main;
+		gunAnim = GetComponent<GunAnimationController>();
 	}
 
 	public void Bang()
 	{
-		anim.SetTrigger("Bang");
-		active.Bang();
+		gunAnim.BangAnimation();
+	}
+
+	public void Reload()
+	{
+		gunAnim.ReloadAnimation();
 	}
 
 	public void Aiming()
 	{
 		aiming = true;
-		Aim();
+		gunAnim.AimAnimation(aiming);
 	}
 
 	public void NotAim()
 	{
 		aiming = false;
-		Aim();
+		gunAnim.AimAnimation(aiming);
 	}
 
-	private void Aim()
-	{
-		anim.SetBool("Aim", aiming);
-		camera.fieldOfView = aiming ? 45f : 65f;
-	}
+	
 }
