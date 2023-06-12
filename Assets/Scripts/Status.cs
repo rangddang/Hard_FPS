@@ -10,8 +10,11 @@ public class Status : MonoBehaviour
 	private float runSpeed;
 	[SerializeField]
 	private float crouchSpeed;
+	[SerializeField]
+	private float jumpScale;
 
 	public float WalkSpeed => walkSpeed;
 	public float RunSpeed => runSpeed;
 	public float CrouchSpeed => crouchSpeed;
+	public float JumpScale => jumpScale;
 }

@@ -5,10 +5,12 @@ using UnityEngine;
 public class GunAnimationController : MonoBehaviour
 {
     private Animator animator;
+	private GunController gun;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+		gun = GetComponent<GunController>();
     }
 
 	public void AimAnimation(bool aiming)
@@ -21,8 +23,15 @@ public class GunAnimationController : MonoBehaviour
 		animator.SetTrigger("Reload");
 	}
 
-	public void BangAnimation()
+	public void FireAnimation()
 	{
-		animator.SetTrigger("Bang");
+		if (gun.aiming)
+		{
+			animator.Play("AimFire", -1, 0);
+		}
+		else
+		{
+			animator.Play("Fire", -1, 0);
+		}
 	}
 }

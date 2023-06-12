@@ -11,9 +11,9 @@ public class GunController : MonoBehaviour
 		gunAnim = GetComponent<GunAnimationController>();
 	}
 
-	public void Bang()
+	public void Fire()
 	{
-		gunAnim.BangAnimation();
+		gunAnim.FireAnimation();
 	}
 
 	public void Reload()
