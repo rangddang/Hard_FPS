@@ -9,10 +9,13 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private KeyCode aimKey = KeyCode.Mouse1;
 	[SerializeField] private KeyCode reloadKey = KeyCode.R;
 	[SerializeField] private KeyCode closeAttackKey = KeyCode.Mouse2;
-	[SerializeField] private KeyCode viewWeaponDetailsKey = KeyCode.Y;
+	[SerializeField] private KeyCode inspectKey = KeyCode.Y;
 	[SerializeField] private KeyCode runKey = KeyCode.LeftShift;
 	[SerializeField] private KeyCode jumpKey = KeyCode.Space;
 	[SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+
+	private bool isRun;
+	private bool isCrouch;
 
 	private Vector3 dir;
 	private float currentSpeed;
@@ -55,43 +58,47 @@ public class PlayerController : MonoBehaviour
 		float horizontal = Input.GetAxisRaw("Horizontal");
 		float vertical = Input.GetAxisRaw("Vertical");
 
-		bool isCrouch = Input.GetKey(crouchKey);
+		isCrouch = Input.GetKey(crouchKey);
 
-		
-		if (character.isGrounded)
+
+		if (horizontal != 0 || vertical != 0)
 		{
-			if (horizontal != 0 || vertical != 0)
+			isRun = Input.GetKey(runKey);
+			//dir += ((vertical * transform.forward) + (horizontal * transform.right)) * Time.deltaTime * 3;
+			dir = (vertical * transform.forward) + (horizontal * transform.right);
+			if (isCrouch && character.isGrounded)
 			{
-				dir = (vertical * transform.forward) + (horizontal * transform.right);
-				dir.Normalize();
-				if (isCrouch)
-				{
-					if(!gun.aiming)
-						camera.ZoomCamera(ZoomCam.Nomal);
-					currentSpeed = status.CrouchSpeed;
-				}
-				else if (Input.GetKey(runKey) && !gun.aiming)
-				{
-					camera.ZoomCamera(ZoomCam.Run);
-					currentSpeed = status.RunSpeed;
-				}
-				else
-				{
-					if (!gun.aiming)
-						camera.ZoomCamera(ZoomCam.Nomal);
-					currentSpeed = status.WalkSpeed;
-				}
+				currentSpeed = status.CrouchSpeed;
+			}
+			else if (isRun && !gun.aiming)
+			{
+				camera.ZoomCamera(ZoomCam.Run);
+				currentSpeed = status.RunSpeed;
 			}
 			else
 			{
-				dir = Vector3.zero;
-				currentSpeed = 0;
+				currentSpeed = status.WalkSpeed;
 			}
+		}
+		else if (character.isGrounded)
+		{
+			isRun = false;
+			dir = Vector3.zero;
+			currentSpeed = 0;
+		}
+
+		if(Mathf.Abs(dir.x) > 1 || Mathf.Abs(dir.z) > 1)
+		{
+			dir.Normalize();
+		}
+
+		if (!gun.aiming && !isRun)
+		{
+			camera.ZoomCamera(ZoomCam.Nomal);
 		}
 
 		if (Input.GetKeyDown(jumpKey) && character.isGrounded)
 		{
-			print("¶ì¿ë!");
 			movement.Jump(status.JumpScale);
 		}
 		movement.Crouch(isCrouch);
@@ -106,17 +113,23 @@ public class PlayerController : MonoBehaviour
 		}
 		if (Input.GetKeyDown(aimKey))
 		{
-			camera.ZoomCamera(ZoomCam.Zoom);
-			gun.Aiming();
+			gun.Aiming(true);
 		}
 		else if (Input.GetKeyUp(aimKey))
 		{
-			camera.ZoomCamera(ZoomCam.Run);
-			gun.NotAim();
+			gun.Aiming(false);
 		}
 		if (Input.GetKeyDown(reloadKey))
 		{
 			gun.Reload();
+		}
+		if (Input.GetKeyDown(closeAttackKey))
+		{
+			gun.CloseAttack();
+		}
+		if (Input.GetKeyDown(inspectKey))
+		{
+			gun.InspectWeapon();
 		}
 	}
 }

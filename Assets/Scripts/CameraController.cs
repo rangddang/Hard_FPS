@@ -15,26 +15,31 @@ public class CameraController : MonoBehaviour
 	[SerializeField] private float zoomSize;
     [SerializeField] private float runSize;
 
+    [SerializeField] private float recoil = 3;
 
 	private Camera camera;
+    private Camera gunCamera;
     private float currentZoomSize;
     private float targetZoomSize;
 
     private void Awake()
     {
         camera = GetComponent<Camera>();
+        gunCamera = transform.GetChild(0).GetComponent<Camera>();
         targetZoomSize = nomalSize;
     }
 
     private void Update()
     {
-		currentZoomSize = Mathf.Lerp(currentZoomSize, targetZoomSize, Time.deltaTime * 5);
+		currentZoomSize = Mathf.Lerp(currentZoomSize, targetZoomSize, Time.deltaTime * 10);
         camera.fieldOfView = currentZoomSize;
+		gunCamera.fieldOfView = currentZoomSize;
 	}
 
     public void FireCamera()
     {
-        StartCoroutine("Fire");
+		StopCoroutine("Fire");
+		StartCoroutine("Fire");
     }
 
     public void ZoomCamera(ZoomCam zoom)
@@ -55,11 +60,27 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator Fire()
     {
+        float up;
 
-        while (true)
+		up = SetFireCam(0);
+		while (up > -recoil)
         {
-
-            yield return null;
+            up = SetFireCam(up - Time.deltaTime * (recoil * 35));
+			yield return null;
         }
-    }
+		up = SetFireCam(-recoil);
+		yield return new WaitForSeconds(0.05f);
+		while (up < 0)
+		{
+			up = SetFireCam(up + Time.deltaTime * (recoil * 8));
+			yield return null;
+		}
+		up = SetFireCam(0);
+	}
+
+    private float SetFireCam(float up)
+    {
+		camera.transform.localRotation = Quaternion.Euler(up, 0, 0);
+        return up;
+	}
 }

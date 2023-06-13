@@ -34,4 +34,16 @@ public class GunAnimationController : MonoBehaviour
 			animator.Play("Fire", -1, 0);
 		}
 	}
+
+	public void CloseAttackAnimation()
+	{
+		int rand = Random.Range(1, 2 + 1);
+		animator.Play("CloseAttack_"+ rand, -1, 0);
+
+	}
+
+	public void InspectAnimation()
+	{
+		animator.SetTrigger("Inspect");
+	}
 }

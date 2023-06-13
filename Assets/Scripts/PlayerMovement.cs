@@ -48,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
     {
 		if (!character.isGrounded)
 		{
-            print("중력이 느껴진드아앗!!!");
 			moveVelo.y += gravityScale * Time.deltaTime;
 		}
 	}
