@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class GunController : MonoBehaviour
@@ -7,29 +8,45 @@ public class GunController : MonoBehaviour
 	[SerializeField] private float closeAttackLate;
 	[SerializeField] private float reloadLate;
 
+
 	[SerializeField] private GameObject fireEffect;
+	[SerializeField] private BoxCollider closeAttackRange;
 
 	[SerializeField] private AnimationClip reloadClip;
 	[SerializeField] private AnimationClip InspectClip;
 
+	[SerializeField]
+	public BulletSetting bulletSetting;
+
 	public bool aiming;
 
+	private GunSetting gunSetting;
+	private Transform head;
 	private GunAnimationController gunAnim;
 	private CameraController camera;
-	private GunSetting gunSetting;
+	private PlayerMovement movement;
 
 	private float lastAttackTime = 0;
 	private bool isReload = false;
 	private bool isCloseAttacked = false;
 	private bool isInspected = false;
 
+	private RaycastHit hit;
+
+	public BulletName BulletName => bulletSetting.bulletName;
+
 	private void Awake()
 	{
 		gunAnim = GetComponent<GunAnimationController>();
 		gunSetting = GetComponent<GunSetting>();
 		camera = Camera.main.GetComponent<CameraController>();
+		movement = transform.parent.parent.GetComponent<PlayerMovement>();
+		head = transform.parent;
 
-		gunSetting.currentAmmo = gunSetting.maxAmmo;
+		bulletSetting.currentAmmo = bulletSetting.maxAmmo;
+
+		fireEffect.SetActive(false);
+		closeAttackRange.enabled = false;
 	}
 
 	private void Update()
@@ -41,6 +58,10 @@ public class GunController : MonoBehaviour
 		else if (aiming)
 		{
 			camera.ZoomCamera(ZoomCam.Zoom);
+		}
+		else if (movement.isDash)
+		{
+			camera.ZoomCamera(ZoomCam.Dash);
 		}
 	}
 
@@ -59,10 +80,10 @@ public class GunController : MonoBehaviour
 		if (isReload) return;
 
 		if (isCloseAttacked) return;
+		//Áß¿ä
+		if (bulletSetting.currentAmmo >= bulletSetting.maxAmmo) return;
 
-		if (gunSetting.currentAmmo >= gunSetting.maxAmmo) return;
-
-		if (gunSetting.ammos <= 0) return;
+		if (bulletSetting.hasAmmo <= 0) return;
 
 		StartCoroutine("OnReload");
 	}
@@ -98,18 +119,32 @@ public class GunController : MonoBehaviour
 		{
 			lastAttackTime = Time.time;
 
-			if (gunSetting.currentAmmo <= 0)
+			if (bulletSetting.currentAmmo <= 0)
 			{
 				Reload();
 				return;
 			}
 
-			gunSetting.currentAmmo--;
+			bulletSetting.currentAmmo--;
+
+			if(Physics.Raycast(head.position, Camera.main.transform.forward, out hit, 500))
+			{
+				if (hit.transform.CompareTag("Enemy"))
+				{
+					hit.transform.GetComponent<Enemy>().Hit(bulletSetting.attackDamage);
+					hit.transform.GetComponent<Enemy>().Knockback(head.forward, bulletSetting.attackPower);
+				}
+				else if (hit.transform.CompareTag("Object"))
+				{
+					hit.transform.GetComponent<Object>().Knockback(head.forward, bulletSetting.attackPower);
+				}
+			}
 
 			camera.FireCamera();
 			gunAnim.FireAnimation();
 
 			StartCoroutine("FireEffect");
+
 		}
 	}
 
@@ -131,16 +166,16 @@ public class GunController : MonoBehaviour
 			{
 				reload = true;
 
-				if (gunSetting.ammos >= gunSetting.maxAmmo)
+				if (bulletSetting.hasAmmo >= bulletSetting.maxAmmo)
 				{
-					gunSetting.ammos -= gunSetting.maxAmmo - gunSetting.currentAmmo;
-					gunSetting.currentAmmo = gunSetting.maxAmmo;
+					bulletSetting.hasAmmo -= bulletSetting.maxAmmo - bulletSetting.currentAmmo;
+					bulletSetting.currentAmmo = bulletSetting.maxAmmo;
 				}
 				else
 				{
-					int ammo = gunSetting.ammos;
-					gunSetting.ammos -= gunSetting.ammos - gunSetting.currentAmmo;
-					gunSetting.currentAmmo = ammo;
+					int ammo = bulletSetting.hasAmmo;
+					bulletSetting.hasAmmo -= bulletSetting.hasAmmo - bulletSetting.currentAmmo;
+					bulletSetting.currentAmmo = ammo;
 				}
 
 			}
@@ -160,6 +195,9 @@ public class GunController : MonoBehaviour
 	{
 		isCloseAttacked = true;
 
+		CloseAttack closeAttack = closeAttackRange.GetComponent<CloseAttack>();
+		int attackTrigger = 0;
+
 		gunAnim.CloseAttackAnimation();
 
 		float currentTime = 0;
@@ -167,6 +205,20 @@ public class GunController : MonoBehaviour
 		while (true)
 		{
 			currentTime += Time.deltaTime;
+
+			if(currentTime >= 0.05f && attackTrigger == 0)
+			{
+				closeAttack.canHit = true;
+				attackTrigger = 1;
+				closeAttackRange.enabled = true;
+			}
+			if (currentTime >= 0.25f && attackTrigger == 1)
+			{
+				closeAttack.canHit = false;
+				attackTrigger = 2;
+				closeAttackRange.enabled = false;
+			}
+
 
 			if (currentTime >= closeAttackLate)
 			{
@@ -204,8 +256,11 @@ public class GunController : MonoBehaviour
 
 	private IEnumerator FireEffect()
 	{
+		float rand = Random.Range(0f, 360f);
+
 		fireEffect.SetActive(true);
-		yield return new WaitForSeconds(gunSetting.attackRate * 0.5f);
+		fireEffect.transform.localRotation = Quaternion.Euler(0, 0, rand);
+		yield return new WaitForSeconds(gunSetting.attackRate * 0.3f);
 		fireEffect.SetActive(false);
 	}
 }

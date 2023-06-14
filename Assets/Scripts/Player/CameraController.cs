@@ -6,14 +6,14 @@ public enum ZoomCam
 {
     Nomal,
     Zoom,
-    Run
+    Dash
 }
 
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private float nomalSize;
 	[SerializeField] private float zoomSize;
-    [SerializeField] private float runSize;
+    [SerializeField] private float dashSize;
 
     [SerializeField] private float recoil = 3;
 
@@ -52,9 +52,9 @@ public class CameraController : MonoBehaviour
 		{
             targetZoomSize = zoomSize;
 		}
-		else if (zoom == ZoomCam.Run)
+		else if (zoom == ZoomCam.Dash)
 		{
-            targetZoomSize = runSize;
+            targetZoomSize = dashSize;
 		}
 	}
 
@@ -72,7 +72,7 @@ public class CameraController : MonoBehaviour
 		yield return new WaitForSeconds(0.05f);
 		while (up < 0)
 		{
-			up = SetFireCam(up + Time.deltaTime * (recoil * 8));
+			up = SetFireCam(up + Time.deltaTime * (recoil * 10));
 			yield return null;
 		}
 		up = SetFireCam(0);

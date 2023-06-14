@@ -10,11 +10,11 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private KeyCode reloadKey = KeyCode.R;
 	[SerializeField] private KeyCode closeAttackKey = KeyCode.Mouse2;
 	[SerializeField] private KeyCode inspectKey = KeyCode.Y;
-	[SerializeField] private KeyCode runKey = KeyCode.LeftShift;
+	[SerializeField] private KeyCode dashKey = KeyCode.LeftShift;
 	[SerializeField] private KeyCode jumpKey = KeyCode.Space;
 	[SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
 
-	private bool isRun;
+	private bool isDash;
 	private bool isCrouch;
 
 	private Vector3 dir;
@@ -63,17 +63,16 @@ public class PlayerController : MonoBehaviour
 
 		if (horizontal != 0 || vertical != 0)
 		{
-			isRun = Input.GetKey(runKey);
+			isDash = Input.GetKeyDown(dashKey);
 			//dir += ((vertical * transform.forward) + (horizontal * transform.right)) * Time.deltaTime * 3;
 			dir = (vertical * transform.forward) + (horizontal * transform.right);
 			if (isCrouch && character.isGrounded)
 			{
 				currentSpeed = status.CrouchSpeed;
 			}
-			else if (isRun && !gun.aiming)
+			else if (isDash && !gun.aiming)
 			{
-				camera.ZoomCamera(ZoomCam.Run);
-				currentSpeed = status.RunSpeed;
+				movement.Dash(dir);
 			}
 			else
 			{
@@ -82,7 +81,7 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (character.isGrounded)
 		{
-			isRun = false;
+			isDash = false;
 			dir = Vector3.zero;
 			currentSpeed = 0;
 		}
@@ -92,7 +91,7 @@ public class PlayerController : MonoBehaviour
 			dir.Normalize();
 		}
 
-		if (!gun.aiming && !isRun)
+		if (!gun.aiming && !isDash)
 		{
 			camera.ZoomCamera(ZoomCam.Nomal);
 		}

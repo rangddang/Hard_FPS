@@ -39,7 +39,6 @@ public class GunAnimationController : MonoBehaviour
 	{
 		int rand = Random.Range(1, 2 + 1);
 		animator.Play("CloseAttack_"+ rand, -1, 0);
-
 	}
 
 	public void InspectAnimation()
