@@ -6,7 +6,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float gravityScale = -9.81f;
+	[SerializeField] private float dashSpeed;
+	[SerializeField] private float dashTime;
 	[SerializeField] private Vector3 moveVelo;
+	[SerializeField] private Vector3 dashVelo;
+
+	public bool isDash;
 
 	private CharacterController character;
 	private Transform head;
@@ -19,22 +24,39 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+		if(isDash) return;
+
         UpdateGravity();
 		character.Move(moveVelo * Time.deltaTime);
 	}
 
     public void Move(Vector3 dir)
     {
-        moveVelo = (dir) + (moveVelo.y * Vector3.up);
+		if (isDash) return;
+
+		moveVelo = (dir) + (moveVelo.y * Vector3.up);
     }
 
-    public void Jump(float jumpScale)
+	public void Dash(Vector3 dir)
+	{
+		if (isDash) return;
+
+		dashVelo = dir;
+		moveVelo.y = 0;
+		StartCoroutine("OnDash");
+	}
+
+	public void Jump(float jumpScale)
     {
+		if (isDash) return;
+
 		moveVelo.y = jumpScale;
 	}
 
 	public void Crouch(bool isCrouch)
 	{
+		if (isDash) return;
+
 		float height = isCrouch ? 1f : 2f;
 		float center = isCrouch ? -0.5f : 0f;
 		float headPos = isCrouch ? 0.2f : 0.6f;
@@ -49,6 +71,25 @@ public class PlayerMovement : MonoBehaviour
 		if (!character.isGrounded)
 		{
 			moveVelo.y += gravityScale * Time.deltaTime;
+		}
+	}
+
+	private IEnumerator OnDash()
+	{
+		isDash = true;
+		float currentTime = 0;
+
+		while (true)
+		{
+			character.Move(dashVelo * dashSpeed * Time.deltaTime);
+
+			currentTime += Time.deltaTime;
+			if (currentTime >= dashTime)
+			{
+				isDash = false;
+				yield break;
+			}
+			yield return null;
 		}
 	}
 }
