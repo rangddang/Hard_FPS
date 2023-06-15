@@ -71,8 +71,8 @@ public class GunController : MonoBehaviour
 
 		if (isCloseAttacked) return;
 
+		isInspected = false;
 		OnFire();
-
 	}
 
 	public void Reload()
@@ -85,6 +85,7 @@ public class GunController : MonoBehaviour
 
 		if (bulletSetting.hasAmmo <= 0) return;
 
+		isInspected = false;
 		StartCoroutine("OnReload");
 	}
 
@@ -99,6 +100,7 @@ public class GunController : MonoBehaviour
 
 		if (isCloseAttacked) return;
 
+		isInspected = false;
 		StartCoroutine("OnCloseAttack");
 	}
 

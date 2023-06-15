@@ -8,10 +8,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravityScale = -9.81f;
 	[SerializeField] private float dashSpeed;
 	[SerializeField] private float dashTime;
+	[SerializeField] private float dashCooldown;
+
 	[SerializeField] private Vector3 moveVelo;
 	[SerializeField] private Vector3 dashVelo;
 
 	public bool isDash;
+	private float lastDashTime;
 
 	private CharacterController character;
 	private Transform head;
@@ -40,6 +43,8 @@ public class PlayerMovement : MonoBehaviour
 	public void Dash(Vector3 dir)
 	{
 		if (isDash) return;
+
+		if (Time.time - lastDashTime < dashCooldown) return;
 
 		dashVelo = dir;
 		moveVelo.y = 0;
@@ -86,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
 			currentTime += Time.deltaTime;
 			if (currentTime >= dashTime)
 			{
+				lastDashTime = Time.time;
 				isDash = false;
 				yield break;
 			}
