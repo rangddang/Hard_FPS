@@ -214,7 +214,7 @@ public class GunController : MonoBehaviour
 				attackTrigger = 1;
 				closeAttackRange.enabled = true;
 			}
-			if (currentTime >= 0.25f && attackTrigger == 1)
+			if (currentTime >= 0.14f && attackTrigger == 1)
 			{
 				closeAttack.canHit = false;
 				attackTrigger = 2;

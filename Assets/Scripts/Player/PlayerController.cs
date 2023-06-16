@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +12,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private KeyCode dashKey = KeyCode.LeftShift;
 	[SerializeField] private KeyCode jumpKey = KeyCode.Space;
 	[SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+
+	public bool isDead = false;
+	[SerializeField] private GameObject dieMessage;
 
 	private bool isDash;
 	private bool isCrouch;
@@ -35,10 +37,14 @@ public class PlayerController : MonoBehaviour
         gun = FindObjectOfType<GunController>();
 		character = GetComponent<CharacterController>();
 		camera = Camera.main.GetComponent<CameraController>();
-    }
+
+		dieMessage.SetActive(isDead);
+	}
 
     private void Update()
     {
+		if (isDead) return;
+
 		RotateToMouse();
 		Move();
 		GunAct();
@@ -130,5 +136,11 @@ public class PlayerController : MonoBehaviour
 		{
 			gun.InspectWeapon();
 		}
+	}
+
+	public void Dead()
+	{
+		isDead = true;
+		dieMessage.SetActive(isDead);
 	}
 }
