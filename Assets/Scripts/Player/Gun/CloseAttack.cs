@@ -20,7 +20,7 @@ public class CloseAttack : MonoBehaviour
 		if (other.transform.CompareTag("Enemy") && canHit == true)
 		{
 			canHit = false;
-			other.transform.GetComponent<Enemy>().Hit(gunSetting.closeAttackDamage);
+			other.transform.GetComponent<Enemy>().Faint();
 			other.transform.GetComponent<Enemy>().Knockback(head.forward, gunSetting.closeAttackPower);
 		}
 		else if (other.transform.CompareTag("Object"))

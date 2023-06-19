@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GunAnimationController : MonoBehaviour
 {
+	[SerializeField] private float baseSpeed = 0.5f;
+
     private Animator animator;
 	private GunController gun;
 
@@ -23,8 +25,9 @@ public class GunAnimationController : MonoBehaviour
 		animator.SetTrigger("Reload");
 	}
 
-	public void FireAnimation()
+	public void FireAnimation(float attackLate)
 	{
+		animator.SetFloat("AttackSpeed", baseSpeed + ((5 / (attackLate * 25)) * baseSpeed));
 		if (gun.aiming)
 		{
 			animator.Play("AimFire", -1, 0);

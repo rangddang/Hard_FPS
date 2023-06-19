@@ -143,4 +143,12 @@ public class PlayerController : MonoBehaviour
 		isDead = true;
 		dieMessage.SetActive(isDead);
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.CompareTag("EnemyAttack"))
+		{
+			Dead();
+		}
+	}
 }

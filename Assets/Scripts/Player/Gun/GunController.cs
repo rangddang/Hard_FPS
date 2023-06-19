@@ -117,8 +117,9 @@ public class GunController : MonoBehaviour
 
 	private void OnFire()
 	{
-		if (Time.time - lastAttackTime > gunSetting.attackRate)
+		if (Time.time - lastAttackTime > gunSetting.attackLate)
 		{
+
 			lastAttackTime = Time.time;
 
 			if (bulletSetting.currentAmmo <= 0)
@@ -143,7 +144,7 @@ public class GunController : MonoBehaviour
 			}
 
 			camera.FireCamera();
-			gunAnim.FireAnimation();
+			gunAnim.FireAnimation(gunSetting.attackLate);
 
 			StartCoroutine("FireEffect");
 
@@ -262,7 +263,7 @@ public class GunController : MonoBehaviour
 
 		fireEffect.SetActive(true);
 		fireEffect.transform.localRotation = Quaternion.Euler(0, 0, rand);
-		yield return new WaitForSeconds(gunSetting.attackRate * 0.3f);
+		yield return new WaitForSeconds(gunSetting.attackLate * 0.3f);
 		fireEffect.SetActive(false);
 	}
 }

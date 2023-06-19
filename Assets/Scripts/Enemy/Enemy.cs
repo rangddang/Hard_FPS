@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
 	[SerializeField] protected float hitTime;
 	[SerializeField] protected float attackRange;
 	[SerializeField] protected bool isDead = false;
+	[SerializeField] protected bool isFaint = false;
+	protected bool faint = false;
 	protected bool isHit = false;
 	protected bool isAttack = false;
 
@@ -23,13 +25,13 @@ public class Enemy : MonoBehaviour
 	{
 		rigid = GetComponent<Rigidbody>();
 		target = FindObjectOfType<PlayerController>().transform;
-		rigid.constraints = RigidbodyConstraints.FreezeRotation;
 		anim = GetComponent<Animator>();
+		Wake();
 	}
 
 	public virtual void Knockback(Vector3 dir, float attackPower)
 	{
-		if (!isDead) return;
+		if (!isFaint) return;
 
 		rigid.AddForce(dir * attackPower, ForceMode.Impulse);
 	}
@@ -50,17 +52,22 @@ public class Enemy : MonoBehaviour
 	{
 		hp = 0f;
 		isDead = true;
-		rigid.constraints = RigidbodyConstraints.None;
-		anim.enabled = false;
+		Faint();
 	}
 
 	public virtual void Move()
 	{
 		if (isDead) return;
 
+		if (isFaint) return;
+
 		if (isHit) return;
 
-		transform.rotation = Quaternion.LookRotation(target.position - transform.position);
+		if (isAttack) return;
+
+		Quaternion targetRotate = Quaternion.LookRotation(new Vector3(target.position.x,transform.position.y, target.position.z) - transform.position);
+
+		transform.rotation = targetRotate;
 		transform.position += transform.forward * Time.deltaTime * moveSpeed;
 	}
 
@@ -68,12 +75,34 @@ public class Enemy : MonoBehaviour
 	{
 		if (isDead) return;
 
+		if (isFaint) return;
+
 		if (isHit) return;
 
 		if (isAttack) return;
 
 		anim.SetTrigger("Attack");
 		StartCoroutine("AttackCoroutine");
+	}
+
+	public virtual void Wake()
+	{
+		isFaint = false;
+		rigid.constraints = RigidbodyConstraints.FreezeRotation;
+		anim.enabled = true;
+	}
+
+	public virtual void Faint()
+	{
+		isFaint = true;
+		faint = true;
+		rigid.constraints = RigidbodyConstraints.None;
+		StartCoroutine("StopAnim");
+		if (!isDead)
+		{
+			StopCoroutine("Fainted");
+			StartCoroutine("Fainted");
+		}
 	}
 
 	private IEnumerator HitCoroutine()
@@ -88,11 +117,44 @@ public class Enemy : MonoBehaviour
 	private IEnumerator AttackCoroutine()
 	{
 		isAttack = true;
-		yield return new WaitForSeconds(0.66f);
-		//공격 콜라이더 활성화
-		yield return new WaitForSeconds(0.04f);
-		//공격 콜라이더 비활성화
-		yield return new WaitForSeconds(0.3f);
+		yield return new WaitForSeconds(1f);
 		isAttack = false;
+	}
+
+	private IEnumerator StopAnim()
+	{
+		anim.Play("Enemy_Walk", -1, 0);
+		yield return new WaitForSeconds(0.05f);
+		anim.enabled = false;
+	}
+
+	private IEnumerator Fainted()
+	{
+		float faintedTime = 5;
+		yield return new WaitForSeconds(faintedTime);
+		if (isDead) yield break;
+		faint = false;
+		StartCoroutine("WakeAnimation");
+	}
+
+	private IEnumerator WakeAnimation()
+	{
+		if (isDead) yield break;
+		if (faint) yield break;
+		rigid.constraints = RigidbodyConstraints.FreezeRotation;
+		Quaternion targetRotate = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
+		while (true)
+		{
+			if (isDead) yield break;
+			if (faint) yield break;
+			transform.rotation = Quaternion.Lerp(transform.rotation, targetRotate, Time.deltaTime * 3);
+			if (Quaternion.Angle(transform.rotation, targetRotate) < 5f)
+			{
+				transform.rotation = targetRotate;
+				Wake();
+				yield break;
+			}
+			yield return null;
+		}
 	}
 }
