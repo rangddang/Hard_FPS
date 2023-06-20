@@ -2576,8 +2576,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityScale: -25
-  dashSpeed: 25
-  dashTime: 0.4
+  dashSpeed: 40
+  dashTime: 0.35
   dashCooldown: 0.5
   moveVelo: {x: 0, y: 0, z: 0}
   dashVelo: {x: 0, y: 0, z: 0}
@@ -2634,8 +2634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c0e2e100309554abff1c77a26c7e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 10
-  runSpeed: 16
+  walkSpeed: 14
   crouchSpeed: 6
   jumpScale: 10
 --- !u!114 &1700971212
@@ -2946,8 +2945,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 5
-  moveSpeed: 4
-  hitTime: 0.4
+  moveSpeed: 12
+  hitTime: 0.2
   attackRange: 1.5
   isDead: 0
   isFaint: 0
@@ -3211,7 +3210,7 @@ MonoBehaviour:
     currentAmmo: 0
     hasAmmo: 999
     maxAmmo: 9
-    attackPower: 15
+    attackPower: 5
     attackDamage: 1
   aiming: 0
 --- !u!95 &1943727069
@@ -3309,10 +3308,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

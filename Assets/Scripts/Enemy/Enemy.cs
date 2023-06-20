@@ -130,7 +130,7 @@ public class Enemy : MonoBehaviour
 
 	private IEnumerator Fainted()
 	{
-		float faintedTime = 5;
+		float faintedTime = 3;
 		yield return new WaitForSeconds(faintedTime);
 		if (isDead) yield break;
 		faint = false;
@@ -147,7 +147,7 @@ public class Enemy : MonoBehaviour
 		{
 			if (isDead) yield break;
 			if (faint) yield break;
-			transform.rotation = Quaternion.Lerp(transform.rotation, targetRotate, Time.deltaTime * 3);
+			transform.rotation = Quaternion.Lerp(transform.rotation, targetRotate, Time.deltaTime * 15);
 			if (Quaternion.Angle(transform.rotation, targetRotate) < 5f)
 			{
 				transform.rotation = targetRotate;

@@ -51,17 +51,17 @@ public class GunController : MonoBehaviour
 
 	private void Update()
 	{
-		if (isReload || isCloseAttacked || isInspected)
+		if (movement.isDash)
+		{
+			camera.ZoomCamera(ZoomCam.Dash);
+		}
+		else if (isReload || isCloseAttacked || isInspected)
 		{
 			camera.ZoomCamera(ZoomCam.Nomal);
 		}
 		else if (aiming)
 		{
 			camera.ZoomCamera(ZoomCam.Zoom);
-		}
-		else if (movement.isDash)
-		{
-			camera.ZoomCamera(ZoomCam.Dash);
 		}
 	}
 

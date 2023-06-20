@@ -142,6 +142,8 @@ public class PlayerController : MonoBehaviour
 	{
 		isDead = true;
 		dieMessage.SetActive(isDead);
+		dir = Vector3.zero;
+		movement.Move(dir);
 	}
 
 	private void OnTriggerEnter(Collider other)
