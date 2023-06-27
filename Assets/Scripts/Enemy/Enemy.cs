@@ -68,7 +68,8 @@ public class Enemy : MonoBehaviour
 		Quaternion targetRotate = Quaternion.LookRotation(new Vector3(target.position.x,transform.position.y, target.position.z) - transform.position);
 
 		transform.rotation = targetRotate;
-		transform.position += transform.forward * Time.deltaTime * moveSpeed;
+		//transform.position += transform.forward * Time.deltaTime * moveSpeed;
+		rigid.MovePosition(transform.position + (transform.forward * Time.deltaTime * moveSpeed * 2));
 	}
 
 	public virtual void Attack()
