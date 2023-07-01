@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
 				currentSpeed = status.WalkSpeed;
 			}
 		}
-		else if (character.isGrounded)
+		else //if (character.isGrounded)
 		{
 			isDash = false;
 			dir = Vector3.zero;

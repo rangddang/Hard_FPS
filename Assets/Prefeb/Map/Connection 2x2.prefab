@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 985663828383951258}
   m_Layer: 0
-  m_Name: Stage Connection 2x2
+  m_Name: Connection 2x2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
