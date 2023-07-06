@@ -61,7 +61,19 @@ public class CameraController : MonoBehaviour
     private IEnumerator Fire()
     {
         float up;
-
+		up = SetFireCam(0);
+		while (up > recoil)
+		{
+			up = SetFireCam(up + Time.deltaTime * (recoil * 40));
+			yield return null;
+		}
+		yield return new WaitForSeconds(0.05f);
+		up = SetFireCam(0);
+		while (up > -recoil)
+		{
+			up = SetFireCam(up - Time.deltaTime * (recoil * 40));
+			yield return null;
+		}
 		up = SetFireCam(0);
 		while (up > -recoil)
         {

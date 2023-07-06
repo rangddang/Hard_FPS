@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -9,15 +7,12 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private KeyCode reloadKey = KeyCode.R;
 	[SerializeField] private KeyCode closeAttackKey = KeyCode.Mouse2;
 	[SerializeField] private KeyCode inspectKey = KeyCode.Y;
-	[SerializeField] private KeyCode dashKey = KeyCode.LeftShift;
+	[SerializeField] private KeyCode slidingKey = KeyCode.LeftShift;
 	[SerializeField] private KeyCode jumpKey = KeyCode.Space;
 	[SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
 
 	public bool isDead = false;
 	[SerializeField] private GameObject dieMessage;
-
-	private bool isDash;
-	private bool isCrouch;
 
 	private Vector3 dir;
 	private float currentSpeed;
@@ -61,35 +56,55 @@ public class PlayerController : MonoBehaviour
 
 	private void Move()
 	{
+		float speedTime = 70;
+
 		float horizontal = Input.GetAxisRaw("Horizontal");
 		float vertical = Input.GetAxisRaw("Vertical");
 
-		isCrouch = Input.GetKey(crouchKey);
+		bool isChouch = false;
 
 
 		if (horizontal != 0 || vertical != 0)
 		{
-			isDash = Input.GetKeyDown(dashKey);
-			//dir += ((vertical * transform.forward) + (horizontal * transform.right)) * Time.deltaTime * 3;
 			dir = (vertical * transform.forward) + (horizontal * transform.right);
-			if (isCrouch && character.isGrounded)
+			if (Input.GetKeyDown(slidingKey) && character.isGrounded)
 			{
-				currentSpeed = status.CrouchSpeed;
+				if (Mathf.Abs(dir.x) > 1 || Mathf.Abs(dir.z) > 1)
+				{
+					dir.Normalize();
+				}
+				movement.Sliding(dir);
 			}
-			else if (isDash && !gun.aiming)
+			else if (Input.GetKey(crouchKey) && character.isGrounded && !movement.isSliding)
 			{
-				movement.Dash(dir);
+				isChouch = true;
+				currentSpeed += Time.deltaTime * speedTime;
+				if (currentSpeed > status.CrouchSpeed)
+					currentSpeed = status.CrouchSpeed;
 			}
 			else
 			{
-				currentSpeed = status.WalkSpeed;
+				currentSpeed += Time.deltaTime * speedTime;
+				if(currentSpeed > status.WalkSpeed)
+					currentSpeed = status.WalkSpeed;
 			}
 		}
-		else //if (character.isGrounded)
+		else
 		{
-			isDash = false;
 			dir = Vector3.zero;
 			currentSpeed = 0;
+		}
+		if (Input.GetKeyDown(jumpKey))
+		{
+			if (movement.isSliding)
+			{
+				movement.StopSliding(dir);
+				movement.Jump(status.JumpScale);
+			}
+			else if (character.isGrounded)
+			{
+				movement.Jump(status.JumpScale);
+			}
 		}
 
 		if(Mathf.Abs(dir.x) > 1 || Mathf.Abs(dir.z) > 1)
@@ -97,16 +112,15 @@ public class PlayerController : MonoBehaviour
 			dir.Normalize();
 		}
 
-		if (!gun.aiming && !isDash)
+		if (!gun.aiming && !movement.isSliding)
 		{
 			camera.ZoomCamera(ZoomCam.Nomal);
 		}
 
-		if (Input.GetKeyDown(jumpKey) && character.isGrounded)
+		if (!movement.isSliding)
 		{
-			movement.Jump(status.JumpScale);
+			movement.Crouch(isChouch);
 		}
-		movement.Crouch(isCrouch);
 		movement.Move(dir * currentSpeed);
 	}
 

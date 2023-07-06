@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MakeMapManager : MonoBehaviour
 {
+    [SerializeField] private Transform mapParnet;
     [SerializeField] private List<GameObject> rooms = new List<GameObject>();
     [SerializeField] private GameObject connection;
     [SerializeField] public List<GameObject> maps = new List<GameObject>();
@@ -66,20 +67,22 @@ public class MakeMapManager : MonoBehaviour
                             {
                                 room.doors[dirRand].SetActive(false);
                                 maps.Add(Instantiate(rooms[Random.Range(0, rooms.Count)], maps[randRoom].transform.position + (dir * roomOfDistance), Quaternion.identity));
-                                Instantiate(connection, maps[randRoom].transform.position + (dir * (roomOfDistance / 2)), Quaternion.Euler(0, 90 * dirRand, 0));
+                                Instantiate(connection, maps[randRoom].transform.position + (dir * (roomOfDistance / 2)), Quaternion.Euler(0, 90 * dirRand, 0)).transform.parent = mapParnet;
                                 int dirBack = dirRand > 1 ? dirRand - 2 : dirRand + 2;
+                                maps[maps.Count - 1].transform.parent = mapParnet;
                                 maps[maps.Count - 1].GetComponent<RoomSetting>().doors[dirBack].SetActive(false);
-                                break;
+
+								break;
                             }
-                            else
+                            //else
                             //연결부 생성
-                            {
+                            //{
 								//room.doors[dirRand].SetActive(false);
 								//Instantiate(connection, maps[randRoom].transform.position + (dir * (roomOfDistance / 2)), Quaternion.Euler(0, 90 * dirRand, 0));
 								//int dirBack = dirRand > 1 ? dirRand - 2 : dirRand + 2;
 								//maps[maps.Count - 1].GetComponent<RoomSetting>().doors[dirBack].SetActive(false);
 								//break;
-							}
+							//}
                         }
                     }
                 }
@@ -87,6 +90,7 @@ public class MakeMapManager : MonoBehaviour
             else
             {
 				maps.Add(Instantiate(rooms[Random.Range(0, rooms.Count)], Vector3.zero, Quaternion.identity));
+				maps[maps.Count - 1].transform.parent = mapParnet;
 			}
 
         }

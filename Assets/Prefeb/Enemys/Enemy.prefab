@@ -80,8 +80,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0257e5d908d65489a6370b6d1e3612, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 5
-  moveSpeed: 12
+  hp: 3
+  moveSpeed: 15
   hitTime: 0.2
   attackRange: 1.5
   isDead: 0

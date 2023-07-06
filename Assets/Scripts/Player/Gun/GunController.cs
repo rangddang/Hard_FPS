@@ -14,6 +14,7 @@ public class GunController : MonoBehaviour
 
 	[SerializeField] private AnimationClip reloadClip;
 	[SerializeField] private AnimationClip InspectClip;
+	[SerializeField] private AnimationClip closeAttackClip;
 
 	[SerializeField]
 	public BulletSetting bulletSetting;
@@ -29,6 +30,7 @@ public class GunController : MonoBehaviour
 	private float lastAttackTime = 0;
 	private bool isReload = false;
 	private bool isCloseAttacked = false;
+	private bool isAnimCloseAttacked = false;
 	private bool isInspected = false;
 
 	private RaycastHit hit;
@@ -51,7 +53,7 @@ public class GunController : MonoBehaviour
 
 	private void Update()
 	{
-		if (movement.isDash)
+		if (movement.isSliding)
 		{
 			camera.ZoomCamera(ZoomCam.Dash);
 		}
@@ -223,7 +225,7 @@ public class GunController : MonoBehaviour
 			}
 
 
-			if (currentTime >= closeAttackLate)
+			if (currentTime >= closeAttackClip.length)
 			{
 				isCloseAttacked = false;
 				
