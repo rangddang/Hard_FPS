@@ -120,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
 	private IEnumerator JumpSliding()
 	{
 		float currentTime = 0;
-		float slidM = 0.7f;
+		float slidM = 0.9f;
 		float currentSlidingSpeed = slidingSpeed * slidM;
 		float t = 0;
 
@@ -134,7 +134,7 @@ public class PlayerMovement : MonoBehaviour
 			t = t * t;
 
 			currentSlidingSpeed = Mathf.Lerp(slidingSpeed * slidM, 0, t);
-			if (currentTime >= slidingTime * 0.8f)
+			if (currentTime >= slidingTime * slidM)
 			{
 				lastSlidingTime = Time.time;
 				yield break;

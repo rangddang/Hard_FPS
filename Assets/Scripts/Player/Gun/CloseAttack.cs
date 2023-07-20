@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class CloseAttack : MonoBehaviour
 {
+	[SerializeField] private float attackPower;
+
 	public bool canHit;
 
-	[SerializeField] private GunSetting gunSetting;
 	private Transform head;
 
 	private void Awake()
@@ -21,11 +22,11 @@ public class CloseAttack : MonoBehaviour
 		{
 			canHit = false;
 			other.transform.GetComponent<Enemy>().Faint();
-			other.transform.GetComponent<Enemy>().Knockback(head.forward, gunSetting.closeAttackPower);
+			other.transform.GetComponent<Enemy>().Knockback(head.forward, attackPower);
 		}
 		else if (other.transform.CompareTag("Object"))
 		{
-			other.transform.GetComponent<Object>().Knockback(head.forward, gunSetting.closeAttackPower);
+			other.transform.GetComponent<Object>().Knockback(head.forward, attackPower);
 		}
 	}
 }

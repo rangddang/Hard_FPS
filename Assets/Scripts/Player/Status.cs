@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class Status : MonoBehaviour
 {
-	[SerializeField]
-	private float walkSpeed;
-	[SerializeField]
-	private float crouchSpeed;
-	[SerializeField]
-	private float jumpScale;
+	public float attackDamage;
+	public float attackLate;
 
-	public float WalkSpeed => walkSpeed;
-	public float CrouchSpeed => crouchSpeed;
-	public float JumpScale => jumpScale;
+	public float moveSpeed;
+	public float jumpScale;
 }

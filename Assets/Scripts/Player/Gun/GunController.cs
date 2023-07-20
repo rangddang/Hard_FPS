@@ -16,12 +16,11 @@ public class GunController : MonoBehaviour
 	[SerializeField] private AnimationClip InspectClip;
 	[SerializeField] private AnimationClip closeAttackClip;
 
-	[SerializeField]
-	public BulletSetting bulletSetting;
+	[SerializeField] public BulletSetting bulletSetting;
+	[SerializeField] private Status status;
 
 	public bool aiming;
 
-	private GunSetting gunSetting;
 	private Transform head;
 	private GunAnimationController gunAnim;
 	private CameraController camera;
@@ -35,12 +34,9 @@ public class GunController : MonoBehaviour
 
 	private RaycastHit hit;
 
-	public BulletName BulletName => bulletSetting.bulletName;
-
 	private void Awake()
 	{
 		gunAnim = GetComponent<GunAnimationController>();
-		gunSetting = GetComponent<GunSetting>();
 		camera = Camera.main.GetComponent<CameraController>();
 		movement = transform.parent.parent.GetComponent<PlayerMovement>();
 		head = transform.parent;
@@ -119,7 +115,7 @@ public class GunController : MonoBehaviour
 
 	private void OnFire()
 	{
-		if (Time.time - lastAttackTime > gunSetting.attackLate)
+		if (Time.time - lastAttackTime > status.attackLate)
 		{
 
 			lastAttackTime = Time.time;
@@ -136,17 +132,17 @@ public class GunController : MonoBehaviour
 			{
 				if (hit.transform.CompareTag("Enemy"))
 				{
-					hit.transform.GetComponent<Enemy>().Hit(bulletSetting.attackDamage);
-					hit.transform.GetComponent<Enemy>().Knockback(head.forward, bulletSetting.attackPower);
+					hit.transform.GetComponent<Enemy>().Hit(status.attackDamage);
+					hit.transform.GetComponent<Enemy>().Knockback(head.forward, status.attackDamage);
 				}
 				else if (hit.transform.CompareTag("Object"))
 				{
-					hit.transform.GetComponent<Object>().Knockback(head.forward, bulletSetting.attackPower);
+					hit.transform.GetComponent<Object>().Knockback(head.forward, status.attackDamage);
 				}
 			}
 
 			camera.FireCamera();
-			gunAnim.FireAnimation(gunSetting.attackLate);
+			gunAnim.FireAnimation(status.attackLate);
 
 			StartCoroutine("FireEffect");
 
@@ -265,7 +261,7 @@ public class GunController : MonoBehaviour
 
 		fireEffect.SetActive(true);
 		fireEffect.transform.localRotation = Quaternion.Euler(0, 0, rand);
-		yield return new WaitForSeconds(gunSetting.attackLate * 0.3f);
+		yield return new WaitForSeconds(status.attackLate * 0.3f);
 		fireEffect.SetActive(false);
 	}
 }

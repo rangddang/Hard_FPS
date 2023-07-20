@@ -63,7 +63,6 @@ public class PlayerController : MonoBehaviour
 
 		bool isChouch = false;
 
-
 		if (horizontal != 0 || vertical != 0)
 		{
 			dir = (vertical * transform.forward) + (horizontal * transform.right);
@@ -75,18 +74,11 @@ public class PlayerController : MonoBehaviour
 				}
 				movement.Sliding(dir);
 			}
-			else if (Input.GetKey(crouchKey) && character.isGrounded && !movement.isSliding)
-			{
-				isChouch = true;
-				currentSpeed += Time.deltaTime * speedTime;
-				if (currentSpeed > status.CrouchSpeed)
-					currentSpeed = status.CrouchSpeed;
-			}
 			else
 			{
 				currentSpeed += Time.deltaTime * speedTime;
-				if(currentSpeed > status.WalkSpeed)
-					currentSpeed = status.WalkSpeed;
+				if(currentSpeed > status.moveSpeed)
+					currentSpeed = status.moveSpeed;
 			}
 		}
 		else
@@ -94,16 +86,23 @@ public class PlayerController : MonoBehaviour
 			dir = Vector3.zero;
 			currentSpeed = 0;
 		}
+		if (Input.GetKey(crouchKey) && character.isGrounded && !movement.isSliding)
+		{
+			isChouch = true;
+			currentSpeed += Time.deltaTime * speedTime;
+			if (currentSpeed > status.moveSpeed * 0.6f)
+				currentSpeed = status.moveSpeed * 0.6f;
+		}
 		if (Input.GetKeyDown(jumpKey))
 		{
 			if (movement.isSliding)
 			{
 				movement.StopSliding(dir);
-				movement.Jump(status.JumpScale);
+				movement.Jump(status.jumpScale);
 			}
 			else if (character.isGrounded)
 			{
-				movement.Jump(status.JumpScale);
+				movement.Jump(status.jumpScale);
 			}
 		}
 

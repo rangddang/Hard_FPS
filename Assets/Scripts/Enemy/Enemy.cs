@@ -5,21 +5,31 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-	protected Rigidbody rigid;
+	protected enum AttackType
+	{
+		Physical,
+		Magical
+	}
 
-	[Header("EnemySettings")]
+	protected Rigidbody rigid;
+	protected Animator anim;
+
+	protected Transform target;
+
+	[Header("EnemyStatus")]
+	[SerializeField] protected AttackType attackType;
 	[SerializeField] protected float hp;
 	[SerializeField] protected float moveSpeed;
-	[SerializeField] protected float hitTime;
 	[SerializeField] protected float attackRange;
+	[SerializeField] protected float hitTime;
+
+	[Header("EnemyState")]
 	[SerializeField] protected bool isDead = false;
 	[SerializeField] protected bool isFaint = false;
 	protected bool faint = false;
 	protected bool isHit = false;
 	protected bool isAttack = false;
 
-	protected Transform target;
-	protected Animator anim;
 
 	private void Awake()
 	{
@@ -55,7 +65,7 @@ public class Enemy : MonoBehaviour
 		Faint();
 	}
 
-	public virtual void Move()
+	public virtual void Move(Vector3 dir)
 	{
 		if (isDead) return;
 
@@ -65,11 +75,13 @@ public class Enemy : MonoBehaviour
 
 		if (isAttack) return;
 
+
+
 		Quaternion targetRotate = Quaternion.LookRotation(new Vector3(target.position.x,transform.position.y, target.position.z) - transform.position);
 
 		transform.rotation = targetRotate;
-		//transform.position += transform.forward * Time.deltaTime * moveSpeed;
-		rigid.MovePosition(transform.position + (transform.forward * Time.deltaTime * moveSpeed * 2));
+
+		rigid.MovePosition(transform.position + (dir.normalized * Time.deltaTime * moveSpeed));
 	}
 
 	public virtual void Attack()
