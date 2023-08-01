@@ -26,6 +26,7 @@ public class Enemy : MonoBehaviour
 	[Header("EnemyState")]
 	[SerializeField] protected bool isDead = false;
 	[SerializeField] protected bool isFaint = false;
+	[SerializeField] protected bool isStun = false;
 	protected bool faint = false;
 	protected bool isHit = false;
 	protected bool isAttack = false;
@@ -143,14 +144,14 @@ public class Enemy : MonoBehaviour
 
 	private IEnumerator Fainted()
 	{
-		float faintedTime = 3;
+		float faintedTime = 5;
 		yield return new WaitForSeconds(faintedTime);
 		if (isDead) yield break;
 		faint = false;
 		StartCoroutine("WakeAnimation");
 	}
 
-	private IEnumerator WakeAnimation()
+	private IEnumerator WakeAnimation()	
 	{
 		if (isDead) yield break;
 		if (faint) yield break;
@@ -160,7 +161,7 @@ public class Enemy : MonoBehaviour
 		{
 			if (isDead) yield break;
 			if (faint) yield break;
-			transform.rotation = Quaternion.Lerp(transform.rotation, targetRotate, Time.deltaTime * 15);
+			transform.rotation = Quaternion.Lerp(transform.rotation, targetRotate, Time.deltaTime * 12);
 			if (Quaternion.Angle(transform.rotation, targetRotate) < 5f)
 			{
 				transform.rotation = targetRotate;
