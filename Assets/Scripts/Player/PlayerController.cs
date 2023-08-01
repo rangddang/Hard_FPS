@@ -32,8 +32,10 @@ public class PlayerController : MonoBehaviour
         gun = FindObjectOfType<GunController>();
 		character = GetComponent<CharacterController>();
 		camera = Camera.main.GetComponent<CameraController>();
-
-		dieMessage.SetActive(isDead);
+		if(dieMessage != null)
+		{
+			dieMessage.SetActive(isDead);
+		}
 	}
 
     private void Update()
@@ -154,7 +156,10 @@ public class PlayerController : MonoBehaviour
 	public void Dead()
 	{
 		isDead = true;
-		dieMessage.SetActive(isDead);
+		if (dieMessage != null)
+		{
+			dieMessage.SetActive(isDead);
+		}
 		dir = Vector3.zero;
 		movement.Move(dir);
 	}

@@ -2226,7 +2226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityScale: -45
   slidingSpeed: 25
-  slidingTime: 0.85
+  slidingTime: 0.9
   dashCooldown: 0.3
   moveVelo: {x: 0, y: 0, z: 0}
   slidingVelo: {x: 0, y: 0, z: 0}
