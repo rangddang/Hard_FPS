@@ -2320,7 +2320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdc785dda9676da4385775234af9b235, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closeAttackLate: 0.5
+  closeAttackLate: 0.7
   reloadLate: 1.1
   fireEffect: {fileID: 750000014}
   closeAttackRange: {fileID: 891657935}
