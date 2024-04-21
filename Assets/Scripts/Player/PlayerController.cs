@@ -134,11 +134,13 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyDown(aimKey))
 		{
 			gun.Aiming(true);
-		}
+            gun.transform.position = new Vector3(0f, -0.23f, 0);
+        }
 		else if (Input.GetKeyUp(aimKey))
 		{
 			gun.Aiming(false);
-		}
+            gun.transform.position = new Vector3(0.35f, -0.23f, 0);
+        }
 		if (Input.GetKeyDown(reloadKey))
 		{
 			gun.Reload();

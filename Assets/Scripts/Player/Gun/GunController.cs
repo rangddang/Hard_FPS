@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GunController : MonoBehaviour
@@ -70,7 +71,8 @@ public class GunController : MonoBehaviour
 		if (isCloseAttacked) return;
 
 		isInspected = false;
-		OnFire();
+		StopCoroutine("OnFire");
+		StartCoroutine("OnFire");
 	}
 
 	public void Reload()
@@ -94,12 +96,12 @@ public class GunController : MonoBehaviour
 	}
 	public void CloseAttack()
 	{
-		if (isReload) return;
-
 		if (isCloseAttacked) return;
 
+		isReload = false;
 		isInspected = false;
-		StartCoroutine("OnCloseAttack");
+        StopCoroutine("OnReload");
+        StartCoroutine("OnCloseAttack");
 	}
 
 	public void InspectWeapon()
@@ -108,45 +110,41 @@ public class GunController : MonoBehaviour
 
 		if (isCloseAttacked) return;
 
-		if (isInspected) return;
-
-		StartCoroutine("OnInspect");
+        isInspected = false;
+        StartCoroutine("OnInspect");
 	}
 
-	private void OnFire()
+	private IEnumerator OnFire()
 	{
-		if (Time.time - lastAttackTime > status.attackLate)
+		yield return new WaitUntil(() => Time.time - lastAttackTime > status.attackLate);
+		lastAttackTime = Time.time;
+
+		if (bulletSetting.currentAmmo <= 0)
 		{
-
-			lastAttackTime = Time.time;
-
-			if (bulletSetting.currentAmmo <= 0)
-			{
-				Reload();
-				return;
-			}
-
-			bulletSetting.currentAmmo--;
-
-			if(Physics.Raycast(head.position, Camera.main.transform.forward, out hit, 500))
-			{
-				if (hit.transform.CompareTag("Enemy"))
-				{
-					hit.transform.GetComponent<Enemy>().Hit(status.attackDamage);
-					hit.transform.GetComponent<Enemy>().Knockback(head.forward, status.attackDamage);
-				}
-				else if (hit.transform.CompareTag("Object"))
-				{
-					hit.transform.GetComponent<Object>().Knockback(head.forward, status.attackDamage);
-				}
-			}
-
-			camera.FireCamera();
-			gunAnim.FireAnimation(status.attackLate);
-
-			StartCoroutine("FireEffect");
-
+			Reload();
+			yield break;
 		}
+
+		bulletSetting.currentAmmo--;
+
+		if (Physics.Raycast(head.position, Camera.main.transform.forward, out hit, 500))
+		{
+			if (hit.transform.CompareTag("Enemy"))
+			{
+				hit.transform.GetComponent<Enemy>().Hit(status.attackDamage);
+				hit.transform.GetComponent<Enemy>().Knockback(head.forward, status.attackDamage);
+			}
+			else if (hit.transform.CompareTag("Object"))
+			{
+				hit.transform.GetComponent<Object>().Knockback(head.forward, status.attackDamage);
+			}
+		}
+
+		camera.FireCamera();
+		gunAnim.FireAnimation(status.attackLate);
+
+		StartCoroutine("FireEffect");
+
 	}
 
 	private IEnumerator OnReload()
@@ -221,7 +219,7 @@ public class GunController : MonoBehaviour
 			}
 
 
-			if (currentTime >= closeAttackClip.length)
+			if (currentTime >= closeAttackLate)
 			{
 				isCloseAttacked = false;
 				
